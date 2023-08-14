@@ -12,18 +12,12 @@ import javax.servlet.http.HttpSession;
 
 import com.digit.javaTraining.bean.Plans;
 
-
-
 @WebServlet("/ViewSub")
-public class ViewSubs extends HttpServlet{
+public class ViewSubs extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //		HttpSession curSession = req.getSession();
-	
-		
-		
-		
-		
+
 		Plans p = new Plans();
 		ArrayList<Plans> ss = p.readAll();
 		HttpSession session = req.getSession();

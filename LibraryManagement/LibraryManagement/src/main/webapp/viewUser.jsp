@@ -7,7 +7,9 @@
 <%@ page import="java.sql.Connection"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"
+	import="java.util.*,com.digit.javaTraining.bean.Plans,com.digit.hibernateServlet.Model.HibernateManager,com.digit.javaTraining.bean.User"
+	%>
 
 <!DOCTYPE html>
 
@@ -93,6 +95,9 @@
 	<div class="container">
 
 		<h1>Users Authorization</h1>
+		<%
+		ArrayList<User> allUser = HibernateManager.getAllUser();
+		%>
 
 		<table>
 
@@ -111,48 +116,16 @@
 			</tr>
 
 			<%
-			String url = "jdbc:mysql://localhost:3306/library";
-
-			String user = "root";
-
-			String pwd = "root";
-
-			try {
-
-				Class.forName("com.mysql.cj.jdbc.Driver");
-
-				Connection con = DriverManager.getConnection(url, user, pwd);
-
-				Statement pstmt = con.createStatement();
-
-				ResultSet resultSet = pstmt.executeQuery("SELECT * FROM user");
-
-				while (resultSet.next()) {
+			for (User curUser : allUser) {
 			%>
-
 			<tr>
-
-				<td><%=resultSet.getInt(1)%></td>
-
-				<td><%=resultSet.getString(2)%></td>
-
-				<td><%=resultSet.getString(4)%></td>
-				<td><%=resultSet.getString(5)%></td>
-
-				<td><%=resultSet.getInt(6)%></td>
-
-
+				<td><%=curUser.getUser_id()%></td>
+				<td><%=curUser.getUname()%></td>
+				<td><%=curUser.getPhone()%></td>
+				<td><%=curUser.getEmail()%></td>
+				<td><%=curUser.getStatus()%></td>
 			</tr>
-
 			<%
-			}
-
-			con.close();
-
-			} catch (Exception e) {
-
-			e.printStackTrace();
-
 			}
 			%>
 

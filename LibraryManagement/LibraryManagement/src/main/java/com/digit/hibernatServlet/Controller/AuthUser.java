@@ -23,7 +23,7 @@ public class AuthUser extends HttpServlet{
 		int user_id=Integer.parseInt(req.getParameter("user_id"));
 		int status=1;
 		if(hbm.authUsers(user_id,status)) {
-		resp.sendRedirect("success.html");	
+		resp.sendRedirect("SucessForAdmin.html");	
 		}
 		else {
 			resp.sendRedirect("fail.html");	

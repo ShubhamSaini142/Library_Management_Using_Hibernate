@@ -7,7 +7,9 @@
 <%@ page import="java.sql.Connection"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"
+	import="java.util.*,com.digit.javaTraining.bean.Plans,com.digit.hibernateServlet.Model.HibernateManager,com.digit.javaTraining.bean.Book"
+	%>
 
 <!DOCTYPE html>
 
@@ -93,6 +95,9 @@
 	<div class="container">
 
 		<h1>Select Book to Remove</h1>
+		<%
+		ArrayList<Book> allBook = HibernateManager.getAllBooks();
+		%>
 
 		<table>
 
@@ -107,52 +112,23 @@
 				<th>Book Cost</th>
 
 				<th>Book Category</th>
+				
+				<th>Book Status</th>
 
 			</tr>
 
 			<%
-			String url = "jdbc:mysql://localhost:3306/library";
-
-			String user = "root";
-
-			String pwd = "root";
-
-			try {
-
-				Class.forName("com.mysql.cj.jdbc.Driver");
-
-				Connection con = DriverManager.getConnection(url, user, pwd);
-
-				Statement pstmt = con.createStatement();
-
-				ResultSet resultSet = pstmt.executeQuery("SELECT * FROM book");
-
-				while (resultSet.next()) {
+			for (Book curBook : allBook) {
 			%>
-
 			<tr>
-
-				<td><%=resultSet.getInt(1)%></td>
-
-				<td><%=resultSet.getString(2)%></td>
-
-				<td><%=resultSet.getString(4)%></td>
-				<td><%=resultSet.getInt(4)%></td>
-
-				<td><%=resultSet.getString(6)%></td>
-
-
+				<td><%=curBook.getBid()%></td>
+				<td><%=curBook.getBname()%></td>
+				<td><%=curBook.getAuthor()%></td>
+				<td><%=curBook.getCost()%></td>
+				<td><%=curBook.getCategory()%></td>
+				<td><%=curBook.getStatus()%></td>
 			</tr>
-
 			<%
-			}
-
-			con.close();
-
-			} catch (Exception e) {
-
-			e.printStackTrace();
-
 			}
 			%>
 

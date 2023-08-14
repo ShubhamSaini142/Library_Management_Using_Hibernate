@@ -12,7 +12,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-
 import com.digit.javaTraining.bean.Admin;
 import com.digit.javaTraining.bean.Book;
 import com.digit.javaTraining.bean.Plans;
@@ -50,8 +49,8 @@ public class HibernateManager {
 	public void removeBook(int bid) {
 		Transaction tran = session.beginTransaction();
 		Book s = (Book) session.get(Book.class, bid); // value is based on Primary key
-
-		session.delete(s);
+		s.setStatus(0);
+		session.update(s);
 
 		System.out.println("Delete Success");
 		tran.commit();
@@ -62,8 +61,8 @@ public class HibernateManager {
 	public void removeUser(int user_id) {
 		Transaction tran = session.beginTransaction();
 		User s = (User) session.get(User.class, user_id); // value is based on Primary key
-
-		session.delete(s);
+		s.setStatus(0);
+		session.update(s);
 
 		System.out.println("Delete Success");
 		tran.commit();
@@ -106,6 +105,7 @@ public class HibernateManager {
 		return false;
 
 	}
+
 	public static boolean Adminlogin(int adminID, int password) {
 		HibernateManager hbm = new HibernateManager();
 		hbm.session.beginTransaction();
@@ -127,7 +127,8 @@ public class HibernateManager {
 
 		Transaction tr = session.beginTransaction();
 
-		Query q = session.createQuery("FROM User where user_id=:uid and pwd=:pwd");
+		Query q = session.createQuery("FROM User where user_id=:uid and pwd=:pwd and status=:status");
+		q.setInteger("status", 1);
 		q.setInteger("uid", uids);
 		q.setString("pwd", pwd);
 
@@ -158,7 +159,7 @@ public class HibernateManager {
 	}
 
 	public boolean authoriseBook(int bid, int status) {
-         
+
 		Transaction tran = session.beginTransaction();
 
 		Book b = (Book) session.get(Book.class, bid);
@@ -198,19 +199,10 @@ public class HibernateManager {
 
 	public int generateRandomInvoiceNumber() {
 		int curGenNum = 0;
-		while (true) {
-			curGenNum = (int) (Math.random() * (99999 - 1000) + 10000);
-			Query q = session.createQuery("FROM PurchaseHistory where invoice=:num");
-			q.setInteger("num", curGenNum);
-			List l = q.list();
-			if (l.isEmpty()) {
-				return curGenNum;
-			}
-		}
+		curGenNum = (int) (Math.random() * (99999 - 1000) + 10000);
+		return curGenNum;
 	}
-	
-	
-	
+
 	public static ArrayList<Subscription> getAllSubscriptions() {
 		ArrayList<Subscription> ViewAllSubscriptions = new ArrayList<Subscription>();
 		Query ListQuery = session.createQuery("FROM Subscription");
@@ -221,6 +213,30 @@ public class HibernateManager {
 			ViewAllSubscriptions.add(currSub);
 		}
 		return ViewAllSubscriptions;
+	}
+
+	public static ArrayList<Book> getAllBooks() {
+		ArrayList<Book> ViewAllBook = new ArrayList<Book>();
+		Query ListQuery = session.createQuery("FROM Book");
+		List list = ListQuery.list();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			Book currBook = (Book) it.next();
+			ViewAllBook.add(currBook);
+		}
+		return ViewAllBook;
+	}
+
+	public static ArrayList<User> getAllUser() {
+		ArrayList<User> ViewAllUser = new ArrayList<User>();
+		Query ListQuery = session.createQuery("FROM User");
+		List list = ListQuery.list();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			User currUser = (User) it.next();
+			ViewAllUser.add(currUser);
+		}
+		return ViewAllUser;
 	}
 
 }
