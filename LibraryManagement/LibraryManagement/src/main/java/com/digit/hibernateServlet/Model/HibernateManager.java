@@ -197,7 +197,7 @@ public class HibernateManager {
 		return a;
 	}
 
-	public int generateRandomInvoiceNumber() {
+	public static int generateRandomInvoiceNumber() {
 		int curGenNum = 0;
 		curGenNum = (int) (Math.random() * (99999 - 1000) + 10000);
 		return curGenNum;
@@ -238,5 +238,38 @@ public class HibernateManager {
 		}
 		return ViewAllUser;
 	}
+
+	public static ArrayList<PurchaseHistory> getAllPurchasesHistory() {
+		ArrayList<PurchaseHistory> allPurchaseHistory = new ArrayList<PurchaseHistory>();
+		Query allList = session.createQuery("FROM PurchaseHistory");
+		List list = allList.list();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			PurchaseHistory curSub = (PurchaseHistory) it.next();
+			allPurchaseHistory.add(curSub);
+		}
+		return allPurchaseHistory;
+	}
+
+	public static boolean purchaseBook(int bookID, int userID) {
+		Transaction trn = session.beginTransaction();
+		Book book = (Book) session.get(Book.class, bookID);
+		User user = (User) session.get(User.class, userID);
+		PurchaseHistory curPH = new PurchaseHistory();
+		curPH.setBook_id(book.getBid());
+		curPH.setBname(book.getBname());
+		curPH.setUser_id(user.getUser_id());
+		curPH.setAmount(book.getCost());
+		curPH.setInvoice(generateRandomInvoiceNumber());
+		Serializable save = session.save(curPH);
+		trn.commit();
+		if(save!=null)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+
 
 }

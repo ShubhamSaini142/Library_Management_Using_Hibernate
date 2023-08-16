@@ -7,21 +7,29 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.hibernate.Transaction;
 
 import com.digit.hibernateServlet.Model.HibernateManager;
+import com.digit.javaTraining.bean.Book;
+import com.digit.javaTraining.bean.Plans;
 import com.digit.javaTraining.bean.PurchaseHistory;
 @WebServlet("/Purchase")
 public class Purchase extends HttpServlet{
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		PurchaseHistory purchase =new PurchaseHistory();
-		purchase.setBook_id(Integer.parseInt(req.getParameter("bid")));
-		purchase.setBname(req.getParameter("bname"));
-		purchase.setUser_id(Integer.parseInt(req.getParameter("user_id")));
-		
+		Book book = new Book();
+		int bid = Integer.parseInt(req.getParameter("bid"));
+		HttpSession session = req.getSession();
+		int uid = (int) session.getAttribute("curUser");
+        int cost = book.getBookAmount(bid);
+		String bname = book.getBookName(bid);
 		HibernateManager hbm = new HibernateManager();
-		//session = HibernateManager.session;
-		boolean b = hbm.purchase(purchase);
+		int ranNumber = hbm.generateRandomInvoiceNumber();
+
+		PurchaseHistory ph = new PurchaseHistory(bid,bname,uid,cost,ranNumber);
+		boolean b = hbm.purchaseBook(bid,uid);
 		if(b==true)
 		{
 			resp.sendRedirect("SuccessForUser.html");

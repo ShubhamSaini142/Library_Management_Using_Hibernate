@@ -3,7 +3,8 @@
 <%@ page import="java.sql.DriverManager"%>
 <%@ page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"
+	import="java.util.*,com.digit.javaTraining.bean.Plans,com.digit.hibernateServlet.Model.HibernateManager,com.digit.javaTraining.bean.PurchaseHistory"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,41 +15,39 @@
 <body>
 	<div class="container">
 		<h1>Book Purchase History</h1>
+		<%
+		
+		ArrayList<PurchaseHistory> allPurchasesHistory = HibernateManager.getAllPurchasesHistory();
+		%>
 		<table>
 			<tr>
+				<th>Purchase ID</th>
 				<th>Book ID</th>
 				<th>Book Name</th>
-				<th>Book Author</th>
 				<th>Book Cost</th>
-				<th>Book Category</th>
+				<th>UserID</th>
+				<th>Invoice</th>
+				
+				
 			</tr>
-			<% 
-            String url = "jdbc:mysql://localhost:3306/library";
-            String user = "root";
-            String pwd = "root";
 
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection con = DriverManager.getConnection(url, user, pwd);
-                Statement pstmt = con.createStatement();
-                ResultSet resultSet = pstmt.executeQuery("SELECT * FROM book");
-
-                while (resultSet.next()) { %>
+			<%
+			for (PurchaseHistory curSub : allPurchasesHistory) {
+			%>
 			<tr>
-				<td><%= resultSet.getInt(1) %></td>
-				<td><%= resultSet.getString(2) %></td>
-				<td><%= resultSet.getString(3) %></td>
-				<td><%= resultSet.getInt(4) %></td>
-				<td><%= resultSet.getString(5) %></td>
+				<td><%=curSub.getPid()%></td>
+				<td><%=curSub.getBook_id()%></td>
+				<td><%=curSub.getBname()%></td>
+				<td><%=curSub.getAmount()%></td>
+				<td><%=curSub.getUser_id()%></td>
+
+				<td><%=curSub.getInvoice()%></td>
 			</tr>
-			<% }
-                con.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            %>
+			<%
+			}
+			%>
 		</table>
-		
+
 
 		<br> <a href="adminHome.html">Go To Home</a>
 	</div>
